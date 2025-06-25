@@ -1,9 +1,8 @@
 import { worker } from '../mocks/browser'
-import type { SetupWorker } from 'msw/browser';
 
 export class WSService {
   activeConnection?: WebSocket
-  activeWorker?: SetupWorker
+  activeWorker?: ServiceWorkerRegistration | undefined
 
   connect = async () => {
     await this.disconnect()

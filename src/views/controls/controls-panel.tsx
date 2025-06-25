@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { FocusEvent } from 'react'
 import { Button } from './button.tsx';
 import { MAX_HEART_RATE, MIN_HEART_RATE } from '../../config.ts';
 
@@ -15,8 +16,8 @@ export const ControlsPanel = ({ currentHeartRate, setHeartRate, disabled }: {
     setHeartRate(value)
   }
 
-  const onInputChange = (e: InputEvent) => {
-    const val = Math.min((Math.max(e.target.value, MIN_HEART_RATE)), MAX_HEART_RATE)
+  const onInputChange = (e: FocusEvent<HTMLInputElement>) => {
+    const val = Math.min((Math.max(e?.target?.value ? Number(e?.target?.value) : 0, MIN_HEART_RATE)), MAX_HEART_RATE)
     setInputValue(val)
     onChangeHeartRate(val)
   }

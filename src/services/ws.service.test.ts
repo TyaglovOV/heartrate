@@ -14,6 +14,7 @@ describe('WSService', () => {
 
   beforeEach(() => {
     wsMock = {
+      // @ts-ignore
       readyState: WebSocket.OPEN,
       onopen: null,
       onmessage: null,
@@ -23,6 +24,7 @@ describe('WSService', () => {
       close: vi.fn(function (this: WebSocket) {
         // эмулируем нормальное закрытие
         setTimeout(() => {
+          // @ts-ignore
           this.readyState = WebSocket.CLOSED
           this.onclose?.(new CloseEvent('close'))
         }, 0)

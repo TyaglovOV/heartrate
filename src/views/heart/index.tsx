@@ -7,7 +7,7 @@ export const Heart = observer(() => {
   const { heartRateStore: { currentHeartRate } } = useStores()
   const [bpm, setBpm] = useState(currentHeartRate)
   const startTimeRef = useRef<number>(performance.now())
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   // sync function for heartrate -- remove twitching
   useLayoutEffect(() => {

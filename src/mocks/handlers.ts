@@ -6,7 +6,7 @@ const chat = ws.link('ws://heart.rate/')
 function listener ({ client }: { client: WebSocketClientConnectionProtocol }){
   console.log('[MSW] WebSocket client connected')
 
-  let intervalId = 0
+  let intervalId: ReturnType<typeof setInterval>
   let heartRate = '100'
 
   client.addEventListener('close', stop)
