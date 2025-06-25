@@ -1,13 +1,10 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 import { WSService } from '../services/ws.service.ts';
-
-const defaultHeartRate = 70
-export const MaxHeartRate = 250
-export const MinHeartRate = 26
+import { DEFAULT_HEART_RATE, MAX_HEART_RATE, MIN_HEART_RATE } from '../config.ts';
 
 export class HeartRateStore {
-  // improve -- add divide local and server heartrate
-  currentHeartRate: number = defaultHeartRate
+  // improve -- divide local and server heartrate
+  currentHeartRate: number = DEFAULT_HEART_RATE
   isConnected: boolean = false
   isPending: boolean = false
   wsService: WSService
@@ -18,7 +15,7 @@ export class HeartRateStore {
   }
 
   setHeartRate = (heartRate: number) => {
-    this.currentHeartRate = Math.min((Math.max(heartRate, MinHeartRate)), MaxHeartRate)
+    this.currentHeartRate = Math.min((Math.max(heartRate, MIN_HEART_RATE)), MAX_HEART_RATE)
   }
 
   // slice of server logic is flooding this place
@@ -49,6 +46,7 @@ export class HeartRateStore {
     this.isPending = true
 
     await this.wsService.disconnect()
+    this.wsService.unsubscribe()
 
     runInAction(() => {
       this.isConnected = false

@@ -6,8 +6,16 @@ export const Controls = observer(() => {
   const { heartRateStore: { isConnected, isPending, setHeartRate, setServerHeartRate, currentHeartRate } } = useStores()
 
   if (!isConnected) {
-    return <ControlsPanel mode='local' disabled={isPending} setHeartRate={setHeartRate} currentHeartRate={currentHeartRate} />
+    return <ControlsPanel
+      disabled={isPending}
+      setHeartRate={setHeartRate}
+      currentHeartRate={currentHeartRate}
+    />
   }
 
-  return <ControlsPanel mode='server' disabled={isPending} setHeartRate={setServerHeartRate} currentHeartRate={currentHeartRate} />
+  return <ControlsPanel
+    disabled={isPending}
+    setHeartRate={setServerHeartRate}
+    currentHeartRate={currentHeartRate}
+  />
 })

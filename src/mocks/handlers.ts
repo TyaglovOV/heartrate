@@ -16,9 +16,11 @@ function listener ({ client }: { client: WebSocketClientConnectionProtocol }){
     // stop()
     // start()
   })
-  start()
 
-  function start() {
+  client.send(heartRate)
+  startInterval()
+
+  function startInterval() {
     intervalId = setInterval(() => {
       client.send(heartRate)
     }, 1000)

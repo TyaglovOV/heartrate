@@ -1,16 +1,21 @@
 import { worker } from '../mocks/browser'
+import type { SetupWorker } from 'msw/browser';
 
 export class WSService {
   activeConnection?: WebSocket
+  activeWorker?: SetupWorker
 
   connect = async () => {
     await this.disconnect()
-    // place to improve
-    await worker.start({
-      serviceWorker: {
-        url: '/mockServiceWorker.js',
-      },
-    })
+
+    if (!this.activeWorker) {
+      // place to improve
+      this.activeWorker = await worker.start({
+        serviceWorker: {
+          url: '/mockServiceWorker.js',
+        },
+      })
+    }
 
     this.activeConnection = new WebSocket('ws://heart.rate')
   }
@@ -57,7 +62,6 @@ export class WSService {
 
   unsubscribe = () => {
     if (!this.activeConnection) {
-      console.log('no active connection already')
       return
     }
 

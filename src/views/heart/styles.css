@@ -17,10 +17,16 @@
 }
 
 @keyframes heartbeat-fast {
-    0%, 100% {
+    0%, 25%, 75%, 100% {
         transform: scale(1);
     }
-    42% {
+    40% {
+        transform: scale(1.2);
+    }
+    50% {
+        transform: scale(1.15);
+    }
+    60% {
         transform: scale(1.2);
     }
 }
