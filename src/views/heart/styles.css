@@ -1,0 +1,42 @@
+@keyframes heartbeat {
+    0%, 100% {
+        transform: scale(1);
+    }
+    14% {
+        transform: scale(1.2);
+    }
+    28% {
+        transform: scale(1);
+    }
+    42% {
+        transform: scale(1.2);
+    }
+    70% {
+        transform: scale(1);
+    }
+}
+
+@keyframes heartbeat-fast {
+    0%, 100% {
+        transform: scale(1);
+    }
+    42% {
+        transform: scale(1.2);
+    }
+}
+
+.inside > path {
+    transition: fill ease 1s;
+}
+
+.green > path {
+    fill: #238823;
+}
+
+.yellow > path {
+    fill: #ffbf00
+}
+
+.red > path {
+    fill: #d2222d;
+}
