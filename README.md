@@ -1,5 +1,7 @@
 # Test project for Akvelon
 
+[Demo](https://tyaglovov.github.io/heartrate/) // Important note: Websocket simulation worked only locally due to impossibility of using node services on GH Pages
+
 # Task: Heart Rate Animation Application
 
 ## Objective
