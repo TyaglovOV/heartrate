@@ -43,7 +43,9 @@ export class HeartRateStore {
         } catch (error) {
             console.error("Error connecting to WebSocket:", error)
         } finally {
-            this.isPending = false
+            runInAction(() => {
+                this.isPending = false
+            })
         }
     }
 
@@ -60,7 +62,9 @@ export class HeartRateStore {
         } catch (error) {
             console.error("Error disconnecting from WebSocket:", error)
         } finally {
-            this.isPending = false
+            runInAction(() => {
+                this.isPending = false
+            })
         }
     }
 }
