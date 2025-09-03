@@ -1,78 +1,89 @@
-import { worker } from '../mocks/browser'
+import { worker } from "@/src/mocks/browser"
 
-export class WSService {
-  activeConnection?: WebSocket
-  activeWorker?: ServiceWorkerRegistration | undefined
+export interface IWSService {
+    connect: () => Promise<void>
+    disconnect: () => Promise<void>
+    subscribe: (onMessage: (num: number) => void) => Promise<void>
+    unsubscribe: () => void
+    sendMessage: (data: string) => void
+}
 
-  connect = async () => {
-    await this.disconnect()
+export class WSService implements IWSService {
+    activeConnection?: WebSocket
+    activeWorker?: ServiceWorkerRegistration | undefined
 
-    if (!this.activeWorker) {
-      // place to improve
-      this.activeWorker = await worker.start({
-        serviceWorker: {
-          url: '/mockServiceWorker.js',
-        },
-      })
-    }
+    connect = async () => {
+        await this.disconnect()
 
-    this.activeConnection = new WebSocket('ws://heart.rate')
-  }
-
-  disconnect = async () => {
-    if (!this.activeConnection) {
-      return
-    }
-
-    this.activeConnection.onopen = null;
-    this.activeConnection.onmessage = null;
-    this.activeConnection.onclose = null;
-    this.activeConnection.onerror = null;
-
-    const closeSocket = async (): Promise<void> => {
-      return new Promise((resolve) => {
-        if (!this.activeConnection || this.activeConnection.readyState === WebSocket.CLOSED) {
-          resolve()
-          return
+        if (!this.activeWorker) {
+            // place to improve
+            this.activeWorker = await worker.start({
+                serviceWorker: {
+                    url: "/mockServiceWorker.js",
+                },
+            })
         }
 
-        this.activeConnection.onclose = () => resolve()
-        this.activeConnection.close(1000, 'close connection; reason: manual reconnect')
-      })
+        this.activeConnection = new WebSocket("ws://heart.rate")
     }
 
-    await closeSocket()
-  }
+    disconnect = async () => {
+        if (!this.activeConnection) {
+            return
+        }
 
-  subscribe = async (onMessage: (num: number) => void) => {
-    if (!this.activeConnection) {
-      console.log('no active connection, connecting...')
-      await this.connect()
+        this.activeConnection.onopen = null
+        this.activeConnection.onmessage = null
+        this.activeConnection.onclose = null
+        this.activeConnection.onerror = null
+
+        const closeSocket = async (): Promise<void> => {
+            return new Promise((resolve) => {
+                if (
+                    !this.activeConnection ||
+                    this.activeConnection.readyState === WebSocket.CLOSED
+                ) {
+                    resolve()
+                    return
+                }
+
+                this.activeConnection.onclose = () => resolve()
+                this.activeConnection.close(1000, "close connection; reason: manual reconnect")
+            })
+        }
+
+        await closeSocket()
     }
 
-    if (!this.activeConnection) {
-      throw new Error('impossible to connect')
+    subscribe = async (onMessage: (num: number) => void) => {
+        if (!this.activeConnection) {
+            console.log("no active connection, connecting...")
+            await this.connect()
+        }
+
+        if (!this.activeConnection) {
+            throw new Error("impossible to connect")
+        }
+
+        this.activeConnection.onmessage = (data: MessageEvent<number>) => {
+            onMessage(data.data)
+        }
     }
 
-    this.activeConnection.onmessage = (data) => {
-      onMessage(data.data)
-    }
-  }
+    unsubscribe = () => {
+        if (!this.activeConnection) {
+            return
+        }
 
-  unsubscribe = () => {
-    if (!this.activeConnection) {
-      return
+        this.activeConnection.onmessage = null
     }
 
-    this.activeConnection.onmessage = null
-  }
+    sendMessage = (data: string) => {
+        if (!this.activeConnection) {
+            console.log("no active connection")
+            return
+        }
 
-  sendMessage = (data: any) => {
-    if (!this.activeConnection) {
-      console.log('no active connection')
-      return
+        this.activeConnection.send(data)
     }
-
-    this.activeConnection.send(data)
-  }
 }
