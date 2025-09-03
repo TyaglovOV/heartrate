@@ -32,25 +32,35 @@ export class HeartRateStore {
     connect = async () => {
         this.isPending = true
 
-        await this.wsService.connect()
+        try {
+            await this.wsService.connect()
 
-        runInAction(() => {
-            this.isConnected = true
+            runInAction(() => {
+                this.isConnected = true
+            })
+
+            await this.wsService.subscribe(this.setHeartRate)
+        } catch (error) {
+            console.error("Error connecting to WebSocket:", error)
+        } finally {
             this.isPending = false
-        })
-
-        await this.wsService.subscribe(this.setHeartRate)
+        }
     }
 
     disconnect = async () => {
         this.isPending = true
 
-        await this.wsService.disconnect()
+        try {
+            await this.wsService.disconnect()
 
-        runInAction(() => {
-            this.wsService.unsubscribe()
-            this.isConnected = false
+            runInAction(() => {
+                this.wsService.unsubscribe()
+                this.isConnected = false
+            })
+        } catch (error) {
+            console.error("Error disconnecting from WebSocket:", error)
+        } finally {
             this.isPending = false
-        })
+        }
     }
 }
